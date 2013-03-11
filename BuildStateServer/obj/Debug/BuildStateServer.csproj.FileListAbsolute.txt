@@ -1,0 +1,11 @@
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer\obj\Debug\BuildStateServer.csprojResolveAssemblyReference.cache
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer\bin\Debug\DelcomDLL.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer\bin\Debug\BuildStateServer.exe.config
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer\bin\Debug\BuildStateServer.exe
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer\bin\Debug\BuildStateServer.pdb
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer\bin\Debug\BuildCommon.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer\bin\Debug\NLog.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer\bin\Debug\BuildCommon.pdb
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer\bin\Debug\NLog.xml
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer\obj\Debug\BuildStateServer.exe
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer\obj\Debug\BuildStateServer.pdb

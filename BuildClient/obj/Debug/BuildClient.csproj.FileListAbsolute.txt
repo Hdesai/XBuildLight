@@ -1,0 +1,13 @@
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\bin\Debug\BuildClient.exe.config
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\bin\Debug\BuildClient.exe
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\bin\Debug\BuildClient.pdb
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\bin\Debug\Autofac.Configuration.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\bin\Debug\Autofac.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\bin\Debug\BuildCommon.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\bin\Debug\Microsoft.TeamFoundation.WorkItemTracking.Client.DataStoreLoader.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\bin\Debug\BuildCommon.pdb
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\bin\Debug\Autofac.xml
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\bin\Debug\Microsoft.WITDataStore.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\obj\Debug\BuildClient.csprojResolveAssemblyReference.cache
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\obj\Debug\BuildClient.exe
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient\obj\Debug\BuildClient.pdb

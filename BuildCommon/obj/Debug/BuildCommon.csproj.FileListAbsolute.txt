@@ -1,0 +1,5 @@
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon\bin\Debug\BuildCommon.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon\bin\Debug\BuildCommon.pdb
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon\obj\Debug\BuildCommon.csprojResolveAssemblyReference.cache
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon\obj\Debug\BuildCommon.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon\obj\Debug\BuildCommon.pdb

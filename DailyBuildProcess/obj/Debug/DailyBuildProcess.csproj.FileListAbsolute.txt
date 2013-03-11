@@ -1,0 +1,10 @@
+C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\bin\Debug\DailyBuildProcess.exe.config
+C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\bin\Debug\DailyBuildProcess.exe
+C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\bin\Debug\DailyBuildProcess.pdb
+C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\DailyBuildProcess.csprojResolveAssemblyReference.cache
+C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\BuildAndDeployProcess.baml
+C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\BuildAndDeployProcess.g.cs
+C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\DailyBuildProcess_MarkupCompile.cache
+C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\DailyBuildProcess.g.resources
+C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\DailyBuildProcess.exe
+C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\DailyBuildProcess.pdb

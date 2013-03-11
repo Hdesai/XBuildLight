@@ -1,0 +1,8 @@
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient.Tests\bin\Debug\BuildClient.Tests.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient.Tests\bin\Debug\BuildClient.Tests.pdb
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient.Tests\bin\Debug\NSubstitute.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient.Tests\bin\Debug\nunit.framework.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient.Tests\bin\Debug\NSubstitute.xml
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient.Tests\bin\Debug\nunit.framework.xml
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient.Tests\obj\Debug\BuildClient.Tests.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildClient.Tests\obj\Debug\BuildClient.Tests.pdb

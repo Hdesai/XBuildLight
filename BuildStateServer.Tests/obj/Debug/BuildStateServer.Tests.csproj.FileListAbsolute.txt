@@ -1,0 +1,4 @@
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer.Tests\bin\Debug\BuildStateServer.Tests.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer.Tests\bin\Debug\BuildStateServer.Tests.pdb
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer.Tests\obj\Debug\BuildStateServer.Tests.dll
+C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer.Tests\obj\Debug\BuildStateServer.Tests.pdb
