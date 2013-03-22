@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="ErrorHandler.cs" />
     <Compile Include="ErrorHandlerHelper.cs" />
+    <Compile Include="ExceptionHelpers.cs" />
     <Compile Include="IBuildStatusChange.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

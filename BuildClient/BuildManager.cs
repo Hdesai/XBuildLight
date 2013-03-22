@@ -17,15 +17,7 @@ namespace BuildClient
         private readonly IBuildStoreEventSource _eventSource;
         private readonly INotifier _notifier;
         private AutoResetEvent _autoResetEvent;
-
-
-        //public BuildManager(IBuildConfigurationManager buildConfigurationManager)
-        //    : this(
-        //        buildConfigurationManager,new Notifier(buildConfigurationManager), new BuildStoreEventSource(new TfsServiceProvider(buildConfigurationManager.TeamFoundationUrl),
-        //                                             buildConfigurationManager.BuildDefinitionNameExclusionPattern,
-        //                                             buildConfigurationManager))
-        //{
-        //}
+        private static readonly object EventLocker=new object();
 
         public BuildManager(IBuildConfigurationManager buildConfigurationManager,
                             INotifier notifier,IBuildStoreEventSource eventSource)
@@ -39,13 +31,16 @@ namespace BuildClient
         public void StartProcessing(object stateInfo)
         {
             Tracing.Server.TraceInformation("Server: StartProcessing (loop)");
-            _autoResetEvent = (AutoResetEvent) stateInfo;
 
-            // timer callback.
-            var autoEvent = new AutoResetEvent(false);
-            var tcb = new TimerCallback(PollBuildServer);
-            _lockExpiryTimer = new Timer(tcb, autoEvent, 1000, Int32.Parse(_buildConfigurationManager.PollPeriod)*1000);
-            autoEvent.WaitOne();
+            lock (EventLocker)
+            {
+                // timer callback.
+                _autoResetEvent = new AutoResetEvent(false);
+                var tcb = new TimerCallback(PollBuildServer);
+                _lockExpiryTimer = new Timer(tcb, _autoResetEvent, 1000, Int32.Parse(_buildConfigurationManager.PollPeriod) * 1000);
+                _autoResetEvent.WaitOne();
+            }
+           
         }
 
         private string HandleAggregateExcetion(AggregateException aggregateException)
@@ -174,8 +169,20 @@ namespace BuildClient
 
         public void StopProcessing()
         {
-            _lockExpiryTimer.Dispose();
-            _autoResetEvent.Set();
+            lock (EventLocker)
+            {
+                if (_lockExpiryTimer!=null)
+                {
+                    _lockExpiryTimer.Dispose();
+                }
+
+                if (_autoResetEvent!=null)
+                {
+                    _autoResetEvent.Set();
+                }
+                
+            }
+            
         }
     }
 }

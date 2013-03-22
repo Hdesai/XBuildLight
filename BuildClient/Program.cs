@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace BuildClient
 {
@@ -7,7 +8,7 @@ namespace BuildClient
         private static void Main(string[] args)
         {
             Console.WriteLine("Initializing Build Client");
-            ClientApplication.Start();
+            ClientApplication.Start(); 
             Console.WriteLine("Build Client is running");
             Console.ReadLine();
             ClientApplication.Stop();

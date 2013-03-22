@@ -27,6 +27,9 @@ namespace BuildStateServer
 
         public static void Stop()
         {
+
+            Tracing.Server.TraceInformation("Stopping Build Status Monitor");
+
             try
             {
                 if (_serviceHost != null) _serviceHost.Close();
@@ -35,6 +38,8 @@ namespace BuildStateServer
             {
                 if (_serviceHost != null) _serviceHost.Abort();
             }
+
+            Tracing.Server.TraceInformation("Build Status Monitor Stopped");
         }
     }
 }

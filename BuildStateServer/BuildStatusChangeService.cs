@@ -41,7 +41,7 @@ namespace BuildStateServer
 
         public void OnBuildStopped()
         {
-            //SetLED(_lastBuildStatus, true, true);
+            SetLED(_lastBuildStatus, true, true,15,true);
         }
 
         public void OnBuildPartiallySucceeded()
@@ -80,23 +80,32 @@ namespace BuildStateServer
 
             uint device = GetDelcomDeviceHandle();
             Delcom.DelcomCloseDevice(device);
+
         }
 
         private uint GetDelcomDeviceHandle()
         {
-            var DeviceName = new StringBuilder(Delcom.MAXDEVICENAMELEN);
 
-            //         Serach for the first match USB device, For USB IO Chips use Delcom.USBIODS
-            // With Generation 2 HID devices, you can pass a TypeId of 0 to open any Delcom device.
-            int Result = Delcom.DelcomGetNthDevice(Delcom.USBDELVI, 0, DeviceName);
-
-            if (Result == 0)
+            int totalNumberOfDevice = Delcom.DelcomGetDeviceCount(0);
+            if (totalNumberOfDevice==0)
             {
-                // if not found, exit
                 throw new Exception("Device not found!\n");
             }
+            var deviceName = new StringBuilder(Delcom.MAXDEVICENAMELEN);
 
-            uint hUSB = Delcom.DelcomOpenDevice(DeviceName, 0); // open the device
+            uint configuredDeviceNumber = UInt32.Parse(System.Configuration.ConfigurationManager.AppSettings["DelcomDeviceNumber"]);
+
+            //Search for the first match USB device, For USB IO Chips use Delcom.USBIODS
+            // With Generation 2 HID devices, you can pass a TypeId of 0 to open any Delcom device.
+            int result = Delcom.DelcomGetNthDevice(Delcom.USBDELVI, configuredDeviceNumber, deviceName);
+
+            if (result == 0)
+            {
+                // if not found, exit
+                throw new Exception(String.Format("Could not open Device {0} not found!\n",configuredDeviceNumber));
+            }
+
+            uint hUSB = Delcom.DelcomOpenDevice(deviceName, 0); // open the device
             Tracing.Server.TraceInformation("Delcom device connected.");
             return hUSB;
         }

@@ -4,7 +4,7 @@
 exe
 C#
 .cs
-C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\
+C:\source\Control\Git\MyTFSBuildMonitor\DailyBuildProcess\obj\Debug\
 DailyBuildProcess
 none
 false
@@ -12,7 +12,7 @@ DEBUG;TRACE
 
 1338430547
 
-7288390259
+7755349614
 14-1820336478
 BuildAndDeployProcess.xaml;
 
