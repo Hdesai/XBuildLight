@@ -8,3 +8,13 @@ C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\DailyBuildP
 C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\DailyBuildProcess.g.resources
 C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\DailyBuildProcess.exe
 C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\DailyBuildProcess.pdb
+C:\source\Control\Git\MyTFSBuildMonitor\DailyBuildProcess\bin\Debug\DailyBuildProcess.exe.config
+C:\source\Control\Git\MyTFSBuildMonitor\DailyBuildProcess\bin\Debug\DailyBuildProcess.exe
+C:\source\Control\Git\MyTFSBuildMonitor\DailyBuildProcess\bin\Debug\DailyBuildProcess.pdb
+C:\source\Control\Git\MyTFSBuildMonitor\DailyBuildProcess\obj\Debug\DailyBuildProcess.csprojResolveAssemblyReference.cache
+C:\source\Control\Git\MyTFSBuildMonitor\DailyBuildProcess\obj\Debug\BuildAndDeployProcess.baml
+C:\source\Control\Git\MyTFSBuildMonitor\DailyBuildProcess\obj\Debug\BuildAndDeployProcess.g.cs
+C:\source\Control\Git\MyTFSBuildMonitor\DailyBuildProcess\obj\Debug\DailyBuildProcess_MarkupCompile.cache
+C:\source\Control\Git\MyTFSBuildMonitor\DailyBuildProcess\obj\Debug\DailyBuildProcess.g.resources
+C:\source\Control\Git\MyTFSBuildMonitor\DailyBuildProcess\obj\Debug\DailyBuildProcess.exe
+C:\source\Control\Git\MyTFSBuildMonitor\DailyBuildProcess\obj\Debug\DailyBuildProcess.pdb

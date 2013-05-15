@@ -4,7 +4,7 @@
 exe
 C#
 .cs
-C:\Source\Tools\BuildMonitorSource\Trunk\DailyBuildProcess\obj\Debug\
+C:\source\Control\Git\MyTFSBuildMonitor\DailyBuildProcess\obj\Debug\
 DailyBuildProcess
 none
 false
