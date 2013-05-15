@@ -17,6 +17,12 @@
             {
                 components.Dispose();
             }
+
+             if (_clientApplication != null)
+             {
+                 _clientApplication.Dispose(); 
+             }
+           
             base.Dispose(disposing);
         }
 

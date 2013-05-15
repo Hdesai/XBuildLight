@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.ServiceModel;
 using System.Text;
 using System.Threading;
@@ -10,7 +12,7 @@ using Microsoft.TeamFoundation.Build.Client;
 
 namespace BuildClient
 {
-    public class BuildManager
+    public class BuildManager:IDisposable
     {
         private static Timer _lockExpiryTimer;
         private readonly IBuildConfigurationManager _buildConfigurationManager;
@@ -27,7 +29,7 @@ namespace BuildClient
             _eventSource = eventSource;
         }
 
-        //Method that will be called periodically
+        
         public void StartProcessing(object stateInfo)
         {
             Tracing.Server.TraceInformation("Server: StartProcessing (loop)");
@@ -35,15 +37,25 @@ namespace BuildClient
             lock (EventLocker)
             {
                 // timer callback.
-                _autoResetEvent = new AutoResetEvent(false);
+
+                //If we are restarting
+                if (_autoResetEvent!=null)
+                {
+                    _autoResetEvent.Dispose();
+                }
+                
+                _autoResetEvent = new AutoResetEvent(true);
+
                 var tcb = new TimerCallback(PollBuildServer);
-                _lockExpiryTimer = new Timer(tcb, _autoResetEvent, 1000, Int32.Parse(_buildConfigurationManager.PollPeriod) * 1000);
-                _autoResetEvent.WaitOne();
+                
+                _lockExpiryTimer = 
+                    new Timer(tcb, _autoResetEvent, 1000, Int32.Parse(_buildConfigurationManager.PollPeriod) * 1000);
+                
             }
            
         }
 
-        private string HandleAggregateExcetion(AggregateException aggregateException)
+        private string UnWrapAggregateExcetion(AggregateException aggregateException)
         {
             var stringBuilder = new StringBuilder();
             
@@ -55,35 +67,38 @@ namespace BuildClient
             return stringBuilder.ToString();
         }
 
+        //Method that will be called periodically
         private void PollBuildServer(object state)
         {
-            IEnumerable<BuildStoreEventArgs> buildStoreEvents;
+            _autoResetEvent.WaitOne();
 
             try
             {
-                buildStoreEvents = _eventSource.GetListOfBuildStoreEvents();
+                Tracing.Client.TraceInformation("Getting list of build store events");
+                IEnumerable<BuildStoreEventArgs> buildStoreEvents = _eventSource.GetListOfBuildStoreEvents();
+                Parallel.ForEach(buildStoreEvents, ProcessBuildEvent);
+                
+            }
+            catch (WebException exception)
+            {
+                Tracing.Client.TraceError(String.Format("An Exception Occured while connecting TfsServer {0}", exception));
             }
             catch (AggregateException exception)
             {
-                var message = HandleAggregateExcetion(exception);
-                Tracing.Client.TraceError("An Exception Occured while connecting TfsServer" + message);
-                return;
+                var message = UnWrapAggregateExcetion(exception);
+                Tracing.Client.TraceError(String.Format("An Exception Occured while connecting TfsServer {0} ", message));
             }
             catch (Exception exception)
             {
-                Tracing.Client.TraceError("An Unhandled Exception Occured while connecting TfsServer" + exception);
+                Tracing.Client.TraceError(String.Format(
+                    "An Unhandled Exception Occured while connecting TfsServer {0} ", exception));
                 throw;
             }
+            finally
+            {
+                _autoResetEvent.Set();
+            }
 
-            try
-            {
-                Parallel.ForEach(buildStoreEvents, ProcessBuildEvent);
-            }
-            catch (AggregateException exception)
-            {
-                var message = HandleAggregateExcetion(exception);
-                Tracing.Client.TraceError("An Exception while processing build events" + message);
-            }
         }
 
         private void ProcessBuildEvent(BuildStoreEventArgs buildEvent)
@@ -171,18 +186,46 @@ namespace BuildClient
         {
             lock (EventLocker)
             {
-                if (_lockExpiryTimer!=null)
-                {
-                    _lockExpiryTimer.Dispose();
-                }
-
-                if (_autoResetEvent!=null)
+                if (_autoResetEvent != null)
                 {
                     _autoResetEvent.Set();
                 }
-                
+
             }
             
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this); 
+        }
+
+        private bool _disposed;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // If you need thread safety, use a lock around these  
+            // operations, as well as in your methods that use the resource. 
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if (_lockExpiryTimer != null)
+                        _lockExpiryTimer.Dispose();
+
+                    if (_autoResetEvent!=null)
+                    {
+                        _autoResetEvent.Dispose();
+                    }
+                
+                }
+
+                // Indicate that the instance has been disposed.
+                _autoResetEvent = null;
+                _lockExpiryTimer = null;
+                _disposed = true;
+            }
         }
     }
 }

@@ -15,7 +15,8 @@ namespace BuildClient
         public object GetService(Type serviceType)
         {
             var collection = new TfsTeamProjectCollection(_projectCollectionUri);
-            object service = null;
+
+            object service;
 
             try
             {
@@ -27,6 +28,7 @@ namespace BuildClient
                 Tracing.Client.TraceError(
                     String.Format("Error communication with TFS server: {0} detail error message {1} ",
                                   _projectCollectionUri, ex));
+                throw;
             }
             Tracing.Client.TraceInformation("Connection to TFS established.");
             return service;

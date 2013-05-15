@@ -15,10 +15,11 @@ namespace BuildClient
         private readonly IDictionary<string, IBuildDetail> _cacheLookup = new Dictionary<string, IBuildDetail>();
         private readonly IServiceProvider _teamFoundationServiceProvider;
         private readonly IBuildConfigurationManager _buildConfigurationManager;
-
-        public BuildStoreEventSource(IServiceProvider teamFoundationServiceProvider,IBuildConfigurationManager buildConfigurationManager):this(teamFoundationServiceProvider,String.Empty,buildConfigurationManager)
+        private readonly IBuildServer _buildServer;
+        public BuildStoreEventSource(IServiceProvider teamFoundationServiceProvider, IBuildConfigurationManager buildConfigurationManager)
+            : this(teamFoundationServiceProvider, String.Empty, buildConfigurationManager)
         {
-            
+
         }
 
         public BuildStoreEventSource(IServiceProvider teamFoundationServiceProvider,
@@ -32,8 +33,12 @@ namespace BuildClient
                 _buildDefinitionNameExclusionRegex = new Regex(buildDefinitionNameExclusionPattern,
                                                                RegexOptions.IgnoreCase | RegexOptions.Compiled);
             }
+
+            _buildServer = _teamFoundationServiceProvider.GetService<IBuildServer>();
+            //_buildServer = buildServer;
         }
 
+        //Will be polled periodically
         public IEnumerable<BuildStoreEventArgs> GetListOfBuildStoreEvents()
         {
             var teamProjectNames = GetTeamProjectNames();
@@ -81,15 +86,15 @@ namespace BuildClient
 
         private IEnumerable<IBuildDetail> GetBuildsForTeamProjects(IEnumerable<string> teamProjectNames)
         {
-            var buildServer = _teamFoundationServiceProvider.GetService<IBuildServer>();
+            
             foreach (string teamProjectName in teamProjectNames)
             {
-                IBuildDefinition[] definitions = buildServer.QueryBuildDefinitions(teamProjectName);
+                IBuildDefinition[] definitions = _buildServer.QueryBuildDefinitions(teamProjectName);
                 foreach (IBuildDefinition definition in definitions)
                 {
                     if (ShouldDefinitionBeIncluded(definition))
                     {
-                        IBuildDetail[] builds = buildServer.QueryBuilds(definition);
+                        IBuildDetail[] builds = _buildServer.QueryBuilds(definition);
                         IBuildDetail mostRecentBuild = builds.OrderBy(b => b.StartTime).LastOrDefault();
                         if (mostRecentBuild != null)
                             yield return mostRecentBuild;

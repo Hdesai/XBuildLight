@@ -8,10 +8,11 @@ namespace BuildClient
         private static void Main(string[] args)
         {
             Console.WriteLine("Initializing Build Client");
-            ClientApplication.Start(); 
+            var client=new ClientApplication();
+            client.Start(); 
             Console.WriteLine("Build Client is running");
             Console.ReadLine();
-            ClientApplication.Stop();
+            client.Stop();
 
         }
     }
