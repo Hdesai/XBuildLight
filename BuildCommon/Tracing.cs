@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace BuildClient
+namespace BuildCommon
 {
     public static class Tracing
     {

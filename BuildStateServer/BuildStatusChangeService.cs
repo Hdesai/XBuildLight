@@ -2,7 +2,6 @@
 using System.ServiceModel;
 using System.Text;
 using System.Threading;
-using BuildClient;
 using BuildCommon;
 
 namespace BuildStateServer

@@ -27,4 +27,15 @@
 		</TaggedOutputs> -->
 	</ItemGroup>
 	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2012SpringLimited\InstallShield.targets"/>
-</Project>
+	<ItemGroup>
+		<ProjectReference Include="..\BuildClient\BuildClient.csproj">
+			<Name>BuildClient</Name>
+			<Project>{92661B68-EA99-4BC3-A3BC-225BDDBE6664}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\BuildStateServer\BuildStateServer.csproj">
+			<Name>BuildStateServer</Name>
+			<Project>{B5449290-8AB9-4049-8606-3872DD58B911}</Project>
+		</ProjectReference>
+	</ItemGroup>
+
+	</Project>

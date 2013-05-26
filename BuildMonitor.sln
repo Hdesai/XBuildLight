@@ -22,6 +22,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildStateServer.Tests", "BuildStateServer.Tests\BuildStateServer.Tests.csproj", "{7D36D060-FAF9-4E30-BE0B-8270B838492D}"
 EndProject
 Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "MyTFSBuildMonitorSetup", "Setup1\MyTFSBuildMonitorSetup.isproj", "{574C94E9-FC53-490F-97AB-DDB31FDE960C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{92661B68-EA99-4BC3-A3BC-225BDDBE6664} = {92661B68-EA99-4BC3-A3BC-225BDDBE6664}
+		{B5449290-8AB9-4049-8606-3872DD58B911} = {B5449290-8AB9-4049-8606-3872DD58B911}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution

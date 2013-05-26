@@ -1,17 +1,16 @@
-﻿using System;
-using System.ServiceProcess;
+﻿using System.ServiceProcess;
 
 namespace BuildClient
 {
     partial class BuildMonitorClientService : ServiceBase
     {
-        private readonly ClientApplication _clientApplication = null;
+        private readonly ClientApplication _clientApplication;
 
         public BuildMonitorClientService()
         {
             InitializeComponent();
 
-            _clientApplication=new ClientApplication();
+            _clientApplication = new ClientApplication();
         }
 
         protected override void OnStart(string[] args)
@@ -28,6 +27,5 @@ namespace BuildClient
         {
             _clientApplication.Start();
         }
-
     }
 }

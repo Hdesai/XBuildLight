@@ -11,19 +11,21 @@ namespace BuildClient
 {
     public class BuildStoreEventSource : IBuildStoreEventSource
     {
+        private readonly IBuildConfigurationManager _buildConfigurationManager;
         private readonly Regex _buildDefinitionNameExclusionRegex;
+        private readonly IBuildServer _buildServer;
         private readonly IDictionary<string, IBuildDetail> _cacheLookup = new Dictionary<string, IBuildDetail>();
         private readonly IServiceProvider _teamFoundationServiceProvider;
-        private readonly IBuildConfigurationManager _buildConfigurationManager;
-        private readonly IBuildServer _buildServer;
-        public BuildStoreEventSource(IServiceProvider teamFoundationServiceProvider, IBuildConfigurationManager buildConfigurationManager)
+
+        public BuildStoreEventSource(IServiceProvider teamFoundationServiceProvider,
+                                     IBuildConfigurationManager buildConfigurationManager)
             : this(teamFoundationServiceProvider, String.Empty, buildConfigurationManager)
         {
-
         }
 
         public BuildStoreEventSource(IServiceProvider teamFoundationServiceProvider,
-                                     string buildDefinitionNameExclusionPattern,IBuildConfigurationManager buildConfigurationManager)
+                                     string buildDefinitionNameExclusionPattern,
+                                     IBuildConfigurationManager buildConfigurationManager)
         {
             _teamFoundationServiceProvider = teamFoundationServiceProvider;
             _buildConfigurationManager = buildConfigurationManager;
@@ -35,13 +37,12 @@ namespace BuildClient
             }
 
             _buildServer = _teamFoundationServiceProvider.GetService<IBuildServer>();
-            //_buildServer = buildServer;
         }
 
         //Will be polled periodically
         public IEnumerable<BuildStoreEventArgs> GetListOfBuildStoreEvents()
         {
-            var teamProjectNames = GetTeamProjectNames();
+            IEnumerable<string> teamProjectNames = GetTeamProjectNames();
             IEnumerable<IBuildDetail> builds = GetBuildsForTeamProjects(teamProjectNames);
 
             foreach (IBuildDetail build in builds)
@@ -56,8 +57,9 @@ namespace BuildClient
 
         private IEnumerable<string> GetTeamProjectNames()
         {
-            var structureService = _teamFoundationServiceProvider.GetService<ICommonStructureService>();
-            var projectsToMonitor = _buildConfigurationManager.BuildMappers.OfType<BuildMapperElement>().ToArray();
+            BuildMapperElement[] projectsToMonitor = _buildConfigurationManager
+                .BuildMappers
+                .OfType<BuildMapperElement>().ToArray();
             if (!projectsToMonitor.Any())
             {
                 return Enumerable.Empty<string>();
@@ -65,7 +67,7 @@ namespace BuildClient
 
             var projectNames = new List<string>();
 
-            foreach (var mapperElement in projectsToMonitor)
+            foreach (BuildMapperElement mapperElement in projectsToMonitor)
             {
                 if (String.IsNullOrEmpty(mapperElement.TfsProjectToMonitor))
                 {
@@ -73,6 +75,7 @@ namespace BuildClient
                         "TFS Project to monitor is not specified, please provide the TFS project.");
                 }
 
+                var structureService = _teamFoundationServiceProvider.GetService<ICommonStructureService>();
                 ProjectInfo[] projectInfos = structureService.ListProjects();
                 BuildMapperElement element = mapperElement;
                 IEnumerable<string> projectInfoNames =
@@ -86,7 +89,6 @@ namespace BuildClient
 
         private IEnumerable<IBuildDetail> GetBuildsForTeamProjects(IEnumerable<string> teamProjectNames)
         {
-            
             foreach (string teamProjectName in teamProjectNames)
             {
                 IBuildDefinition[] definitions = _buildServer.QueryBuildDefinitions(teamProjectName);
@@ -112,12 +114,13 @@ namespace BuildClient
                 return (definition.QueueStatus == DefinitionQueueStatus.Enabled)
                        && !isExcludedByRegex;
             }
-            var buildMapperElements = _buildConfigurationManager.BuildMappers.OfType<BuildMapperElement>();
+            IEnumerable<BuildMapperElement> buildMapperElements =
+                _buildConfigurationManager.BuildMappers.OfType<BuildMapperElement>();
 
             return (definition.QueueStatus == DefinitionQueueStatus.Enabled) &&
                    buildMapperElements.Any(x => x.TfsBuildToMonitor == definition.Name);
         }
-        
+
         private BuildStoreEventArgs GetBuildStoreEventIfAny(IBuildDetail build)
         {
             BuildStoreEventArgs buildStoreEvent;
@@ -132,7 +135,7 @@ namespace BuildClient
                     };
                 return buildStoreEvent;
             }
-            
+
             IBuildDetail originalBuild = _cacheLookup[build.Uri.AbsoluteUri];
             _cacheLookup[build.Uri.AbsoluteUri] = build;
 
@@ -154,8 +157,6 @@ namespace BuildClient
                     Data = originalBuild,
                     Type = BuildStoreEventType.Build
                 };
-
         }
-
     }
 }

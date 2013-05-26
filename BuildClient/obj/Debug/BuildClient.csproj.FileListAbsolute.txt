@@ -38,3 +38,5 @@ C:\source\Control\Git\MyTFSBuildMonitor\BuildClient\bin\Debug\Microsoft.TeamFoun
 C:\source\Control\Git\MyTFSBuildMonitor\BuildClient\bin\Debug\Microsoft.TeamFoundation.VersionControl.Common.Integration.dll
 C:\source\Control\Git\MyTFSBuildMonitor\BuildClient\bin\Debug\Microsoft.TeamFoundation.VersionControl.Client.xml
 C:\source\Control\Git\MyTFSBuildMonitor\BuildClient\bin\Debug\Microsoft.TeamFoundation.VersionControl.Common.xml
+C:\source\Control\Git\MyTFSBuildMonitor\BuildClient\bin\Debug\Autofac.Integration.Wcf.dll
+C:\source\Control\Git\MyTFSBuildMonitor\BuildClient\bin\Debug\Autofac.Configuration.xml

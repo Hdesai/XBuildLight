@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuildManagerExceptionHelper.cs" />
+    <Compile Include="BuildStatusChangeExtension.cs" />
     <Compile Include="ErrorHandler.cs" />
     <Compile Include="ErrorHandlerHelper.cs" />
     <Compile Include="ExceptionHelpers.cs" />

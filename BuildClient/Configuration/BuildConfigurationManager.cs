@@ -19,7 +19,7 @@ namespace BuildClient.Configuration
             get { return ConfigurationManager.AppSettings["teamFoundationUrl"]; }
         }
 
-       
+
         public BuildMapperGroupElementCollection BuildMappers
         {
             get { return BuildMapperConfigSection.Current.BuildMappers; }

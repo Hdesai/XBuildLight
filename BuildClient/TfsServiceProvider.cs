@@ -1,4 +1,5 @@
 using System;
+using BuildCommon;
 using Microsoft.TeamFoundation.Client;
 
 namespace BuildClient

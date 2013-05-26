@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
-using BuildClient;
 
 namespace BuildCommon
 {
     internal static class ErrorHandlerHelper
     {
+
+        
+
         public static void PromoteException(Type serviceType, Exception error, MessageVersion version, ref Message fault)
         {
             //Is error in the form of FaultException<T> ? 
@@ -134,7 +137,6 @@ namespace BuildCommon
             return faultAttributes.Exists(sameFault);
         }
 
-
         public static void LogError(Exception error, MessageFault fault)
         {
             LogData entry = CreateLogbookentry(error, fault);
@@ -237,5 +239,10 @@ namespace BuildCommon
 
             return number;
         }
+    }
+
+    public static class BuildClientExceptionHelper
+    {
+      
     }
 }
