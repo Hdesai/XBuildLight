@@ -40,7 +40,7 @@ namespace BuildClient
         }
 
         //Will be polled periodically
-        public IEnumerable<BuildStoreEventArgs> GetListOfBuildStoreEvents()
+        public IEnumerable<BuildStoreEventArgs> GetBuildStoreEvents()
         {
             IEnumerable<string> teamProjectNames = GetTeamProjectNames();
             IEnumerable<IBuildDetail> builds = GetBuildsForTeamProjects(teamProjectNames);

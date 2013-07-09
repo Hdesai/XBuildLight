@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading;
+using System.Threading.Tasks;
 using Autofac;
 using BuildClient.Configuration;
 using BuildCommon;
@@ -31,11 +31,15 @@ namespace BuildClient
                     e.ExceptionObject.ToString());
 
             IContainer container = LoadContainer();
-
             _buildManager = container.Resolve<BuildManager>();
 
-            Tracing.Server.TraceInformation("Starting Build Manager");
-            ThreadPool.QueueUserWorkItem(x => _buildManager.StartProcessing(null));
+            var startupTask = new Task(() =>
+                {
+                    Tracing.Server.TraceInformation("Starting Build Manager");
+                    _buildManager.StartProcessing(null);
+                });
+            
+            startupTask.Start();
         }
 
         private static IContainer LoadContainer()
@@ -72,14 +76,15 @@ namespace BuildClient
 
         public void Stop()
         {
-            ThreadPool.QueueUserWorkItem(x =>
-                {
-                    if (_buildManager != null)
-                    {
-                        _buildManager.StopProcessing();
-                        Tracing.Server.TraceInformation("Build Manager Stopped");
-                    }
-                });
+            if (_buildManager != null)
+            {
+                var task=new Task(() => _buildManager.StopProcessing());
+                task.WithContinuation(()=>Tracing.Server.TraceInformation("Build Manager Stopped"),
+                                                null,
+                                                null);
+                task.Start();
+           }
+
         }
 
 

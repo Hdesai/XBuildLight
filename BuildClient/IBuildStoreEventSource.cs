@@ -4,6 +4,6 @@ namespace BuildClient
 {
     public interface IBuildStoreEventSource
     {
-        IEnumerable<BuildStoreEventArgs> GetListOfBuildStoreEvents();
+        IEnumerable<BuildStoreEventArgs> GetBuildStoreEvents();
     }
 }

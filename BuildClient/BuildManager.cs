@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using BuildClient.Configuration;
 using BuildCommon;
 
@@ -10,13 +11,11 @@ namespace BuildClient
     {
         private const int DueTime = 1000;
         private static Timer _lockExpiryTimer;
-        private static readonly object EventLocker = new object();
         private readonly IBuildConfigurationManager _buildConfigurationManager;
         private readonly IBuildEventPublisher _buildEventPublisher;
         private readonly IBuildStoreEventSource _eventSource;
-        private AutoResetEvent _autoResetEvent;
         private bool _disposed;
-
+        
         public BuildManager(IBuildConfigurationManager buildConfigurationManager,
                             IBuildStoreEventSource eventSource, IBuildEventPublisher buildEventPublisher)
         {
@@ -35,18 +34,9 @@ namespace BuildClient
         {
             Tracing.Server.TraceInformation("Server: StartProcessing (loop)");
 
-            lock (EventLocker)
-            {
-                //If we are restarting
-                if (_autoResetEvent != null)
-                {
-                    _autoResetEvent.Dispose();
-                }
-
-                _autoResetEvent = new AutoResetEvent(true);
-                _lockExpiryTimer =
-                    new Timer(PollBuildServer, _autoResetEvent, DueTime, GetPollingPeriod());
-            }
+            _lockExpiryTimer =
+                new Timer(PollBuildServer, null, Timeout.Infinite, Timeout.Infinite);
+            _lockExpiryTimer.Change(0, Timeout.Infinite);
         }
 
         private int GetPollingPeriod()
@@ -57,26 +47,19 @@ namespace BuildClient
         //Method that will be called periodically
         private void PollBuildServer(object state)
         {
-            ExecuteOnSingleThread(() =>
-                {
-                    Tracing.Client.TraceInformation("Getting list of build store events");
-                    _eventSource
-                        .GetListOfBuildStoreEvents().ToList()
-                        .ForEach(ProcessBuildEvent);
-                });
-        }
-
-        private void ExecuteOnSingleThread(Action tAction)
-        {
-            BuildManagerExceptionHelper.WithExceptionHandling(
-                tAction,
-                () => _autoResetEvent.WaitOne(),
-                () => _autoResetEvent.Set()
+            BuildManagerExceptionHelper.WithExceptionHandling(() => _eventSource
+                                                                        .GetBuildStoreEvents().ToList()
+                                                                        .ForEach(ProcessBuildEvent),
+                                                              () =>
+                                                              Tracing.Client.TraceInformation(
+                                                                  "Getting list of build store events"),
+                                                              () => _lockExpiryTimer.Change(DueTime, GetPollingPeriod())
                 );
         }
 
         private void ProcessBuildEvent(BuildStoreEventArgs buildEvent)
         {
+          
             Tracing.Client.TraceInformation("Build was requested for " + buildEvent.Data.RequestedFor);
 
             switch (buildEvent.Type)
@@ -96,18 +79,11 @@ namespace BuildClient
 
         private void HandleEvent(BuildStoreEventArgs buildStoreEventArgs)
         {
-            ThreadPool.QueueUserWorkItem(callback => _buildEventPublisher.Publish(buildStoreEventArgs));
+            Task.Factory.StartNew(() => _buildEventPublisher.Publish(buildStoreEventArgs));
         }
 
         public void StopProcessing()
         {
-            lock (EventLocker)
-            {
-                if (_autoResetEvent != null)
-                {
-                    _autoResetEvent.Set();
-                }
-            }
         }
 
         protected virtual void Dispose(bool disposing)
@@ -121,14 +97,9 @@ namespace BuildClient
                     if (_lockExpiryTimer != null)
                         _lockExpiryTimer.Dispose();
 
-                    if (_autoResetEvent != null)
-                    {
-                        _autoResetEvent.Dispose();
-                    }
                 }
 
                 // Indicate that the instance has been disposed.
-                _autoResetEvent = null;
                 _lockExpiryTimer = null;
                 _disposed = true;
             }
