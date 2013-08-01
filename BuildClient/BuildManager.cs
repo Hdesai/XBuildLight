@@ -79,7 +79,9 @@ namespace BuildClient
 
         private void HandleEvent(BuildStoreEventArgs buildStoreEventArgs)
         {
-            Task.Factory.StartNew(() => _buildEventPublisher.Publish(buildStoreEventArgs));
+
+            _buildEventPublisher.Publish(buildStoreEventArgs);
+
         }
 
         public void StopProcessing()

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using BuildClient.Configuration;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Server;
@@ -95,17 +94,13 @@ namespace BuildClient
         }
 
         
-        //TODO:cache expiry based on timer
-        private IBuildDefinition[] _cachedBuildDefinitions;
+       
         
         private IEnumerable<IBuildDetail> GetBuildsForTeamProjects(IEnumerable<string> teamProjectNames)
         {
             foreach (string teamProjectName in teamProjectNames)
             {
-                Interlocked.CompareExchange(ref _cachedBuildDefinitions,
-                                            _buildServer.QueryBuildDefinitions(teamProjectName), null);
-
-                IBuildDefinition[] definitions = _cachedBuildDefinitions;
+                IBuildDefinition[] definitions = _buildServer.QueryBuildDefinitions(teamProjectName);
                 foreach (IBuildDefinition definition in definitions)
                 {
                     if (ShouldDefinitionBeIncluded(definition))

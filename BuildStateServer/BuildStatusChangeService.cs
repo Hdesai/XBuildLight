@@ -11,6 +11,8 @@ namespace BuildStateServer
     {
         private byte _lastBuildStatus;
 
+        
+
         public BuildStatusChangeService()
         {
             //Ensure all LEDS are off.
@@ -86,7 +88,7 @@ namespace BuildStateServer
         {
 
             int totalNumberOfDevice = Delcom.DelcomGetDeviceCount(0);
-            if (totalNumberOfDevice==0)
+            if (totalNumberOfDevice == 0)
             {
                 throw new Exception("Device not found!\n");
             }
@@ -101,7 +103,7 @@ namespace BuildStateServer
             if (result == 0)
             {
                 // if not found, exit
-                throw new Exception(String.Format("Could not open Device {0} not found!\n",configuredDeviceNumber));
+                throw new Exception(String.Format("Could not open Device {0} not found!\n", configuredDeviceNumber));
             }
 
             uint hUSB = Delcom.DelcomOpenDevice(deviceName, 0); // open the device
