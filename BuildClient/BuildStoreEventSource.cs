@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using BuildClient.Configuration;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Server;
@@ -39,6 +40,9 @@ namespace BuildClient
             _buildServer = _teamFoundationServiceProvider.GetService<IBuildServer>();
         }
 
+
+       
+
         //Will be polled periodically
         public IEnumerable<BuildStoreEventArgs> GetBuildStoreEvents()
         {
@@ -55,6 +59,9 @@ namespace BuildClient
             }
         }
 
+        
+
+        
         private IEnumerable<string> GetTeamProjectNames()
         {
             BuildMapperElement[] projectsToMonitor = _buildConfigurationManager
@@ -87,19 +94,29 @@ namespace BuildClient
             return projectNames.Distinct();
         }
 
+        
+        //TODO:cache expiry based on timer
+        private IBuildDefinition[] _cachedBuildDefinitions;
+        
         private IEnumerable<IBuildDetail> GetBuildsForTeamProjects(IEnumerable<string> teamProjectNames)
         {
             foreach (string teamProjectName in teamProjectNames)
             {
-                IBuildDefinition[] definitions = _buildServer.QueryBuildDefinitions(teamProjectName);
+                Interlocked.CompareExchange(ref _cachedBuildDefinitions,
+                                            _buildServer.QueryBuildDefinitions(teamProjectName), null);
+
+                IBuildDefinition[] definitions = _cachedBuildDefinitions;
                 foreach (IBuildDefinition definition in definitions)
                 {
                     if (ShouldDefinitionBeIncluded(definition))
                     {
-                        IBuildDetail[] builds = _buildServer.QueryBuilds(definition);
-                        IBuildDetail mostRecentBuild = builds.OrderBy(b => b.StartTime).LastOrDefault();
-                        if (mostRecentBuild != null)
-                            yield return mostRecentBuild;
+
+                        var buildSpec = _buildServer.CreateBuildDetailSpec(teamProjectName,definition.Name);
+                        buildSpec.InformationTypes = null;
+                        buildSpec.MaxBuildsPerDefinition = 1;
+                        buildSpec.QueryOrder = BuildQueryOrder.FinishTimeDescending;
+                        IBuildQueryResult result= _buildServer.QueryBuilds(buildSpec);
+                        yield return result.Builds.FirstOrDefault();
                     }
                 }
             }
@@ -123,6 +140,7 @@ namespace BuildClient
 
         private BuildStoreEventArgs GetBuildStoreEventIfAny(IBuildDetail build)
         {
+            
             BuildStoreEventArgs buildStoreEvent;
             if (!_cacheLookup.ContainsKey(build.Uri.AbsoluteUri))
             {
@@ -154,7 +172,7 @@ namespace BuildClient
 
             return new BuildStoreEventArgs
                 {
-                    Data = originalBuild,
+                    Data = build,
                     Type = BuildStoreEventType.Build
                 };
         }
