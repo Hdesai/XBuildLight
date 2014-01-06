@@ -2,3 +2,8 @@ C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer.Tests\bin\Debug\BuildS
 C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer.Tests\bin\Debug\BuildStateServer.Tests.pdb
 C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer.Tests\obj\Debug\BuildStateServer.Tests.dll
 C:\Source\Tools\BuildMonitorSource\Trunk\BuildStateServer.Tests\obj\Debug\BuildStateServer.Tests.pdb
+C:\source\Control\Git\MyTFSBuildMonitor\BuildStateServer.Tests\bin\Debug\BuildStateServer.Tests.dll
+C:\source\Control\Git\MyTFSBuildMonitor\BuildStateServer.Tests\bin\Debug\BuildStateServer.Tests.pdb
+C:\source\Control\Git\MyTFSBuildMonitor\BuildStateServer.Tests\obj\Debug\BuildStateServer.Tests.csprojResolveAssemblyReference.cache
+C:\source\Control\Git\MyTFSBuildMonitor\BuildStateServer.Tests\obj\Debug\BuildStateServer.Tests.dll
+C:\source\Control\Git\MyTFSBuildMonitor\BuildStateServer.Tests\obj\Debug\BuildStateServer.Tests.pdb

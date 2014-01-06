@@ -21,9 +21,9 @@ namespace BuildClient
             return _cachedChannelManager.CreateChannel(notificationAddress);
         }
 
-        private IBuildStatusChange CreateChannel(BuildStoreEventArgs buildStoreEventArgs)
+        private IBuildStatusChange CreateChannel(string buildName)
         {
-            string notificationAddress = _notifier.GetNotificationAddress(buildStoreEventArgs.Data.BuildDefinition);
+            string notificationAddress = _notifier.GetNotificationAddress(buildName);
 
             if (String.IsNullOrEmpty(notificationAddress))
             {
@@ -33,44 +33,44 @@ namespace BuildClient
             return GetBuildStatusChangeChannel(notificationAddress);
         }
 
-        public override void Publish(BuildStoreEventArgs buildStoreEventArgs)
+        public override void Publish(string buildName,BuildExecutionStatus buildStatus)
         {
-            string serviceAddress = _notifier.GetNotificationAddress(buildStoreEventArgs.Data.BuildDefinition);
+            string serviceAddress = _notifier.GetNotificationAddress(buildName);
 
             BuildManagerExceptionHelper.With(serviceAddress,
                                              () =>
-                                             CreateChannel(buildStoreEventArgs)
-                                                 .ExecuteOneWayCall(channel => Process(channel, buildStoreEventArgs)),
+                                             CreateChannel(buildName)
+                                                 .ExecuteOneWayCall(channel => Process(channel, buildStatus)),
                                              () => Tracing.Client.TraceInformation("About to Publish... "),
                                              () => Tracing.Client.TraceInformation("Sent to Publisher Target"));
         }
 
-        private static void Process(IBuildStatusChange notificationChannel, BuildStoreEventArgs buildStoreEventArgs)
+        private static void Process(IBuildStatusChange notificationChannel, BuildExecutionStatus buildStatus)
         {
-            switch (buildStoreEventArgs.Data.Status)
+            switch (buildStatus)
             {
-                case BuildStatus.Succeeded:
+                case BuildExecutionStatus.Succeeded:
                     notificationChannel.OnBuildSuceeded();
                     Tracing.Client.TraceInformation("Build Succeeded");
                     break;
 
-                case BuildStatus.Failed:
+                case BuildExecutionStatus.Failed:
                     notificationChannel.OnBuildFailed();
                     Tracing.Client.TraceInformation("Build Failed");
                     break;
 
-                case BuildStatus.Stopped:
+                case BuildExecutionStatus.Stopped:
                     notificationChannel.OnBuildStopped();
                     Tracing.Client.TraceInformation("Build Stopped");
                     break;
 
-                case BuildStatus.InProgress:
+                case BuildExecutionStatus.InProgress:
                     notificationChannel.OnBuildStarted();
                     Tracing.Client.TraceInformation("Build Started");
                     break;
 
                 case
-                    BuildStatus.PartiallySucceeded:
+                    BuildExecutionStatus.PartiallySucceeded:
                     notificationChannel.OnBuildPartiallySucceeded();
                     Tracing.Client.TraceInformation("Build Partially Succeeded");
                     break;

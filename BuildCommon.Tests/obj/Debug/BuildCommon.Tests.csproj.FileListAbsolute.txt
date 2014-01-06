@@ -3,3 +3,8 @@ C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon.Tests\bin\Debug\BuildCommon
 C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon.Tests\obj\Debug\BuildCommon.Tests.csprojResolveAssemblyReference.cache
 C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon.Tests\obj\Debug\BuildCommon.Tests.dll
 C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon.Tests\obj\Debug\BuildCommon.Tests.pdb
+C:\source\Control\Git\MyTFSBuildMonitor\BuildCommon.Tests\bin\Debug\BuildCommon.Tests.dll
+C:\source\Control\Git\MyTFSBuildMonitor\BuildCommon.Tests\bin\Debug\BuildCommon.Tests.pdb
+C:\source\Control\Git\MyTFSBuildMonitor\BuildCommon.Tests\obj\Debug\BuildCommon.Tests.csprojResolveAssemblyReference.cache
+C:\source\Control\Git\MyTFSBuildMonitor\BuildCommon.Tests\obj\Debug\BuildCommon.Tests.dll
+C:\source\Control\Git\MyTFSBuildMonitor\BuildCommon.Tests\obj\Debug\BuildCommon.Tests.pdb

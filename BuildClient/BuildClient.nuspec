@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>BuildClient</id>
+    <title>My TFS Build Client</title>
+    <version>1.0.0</version>
+    <authors>Himanshu Desai</authors>
+    <owners>Himanshu Desai</owners>
+    <licenseUrl>http://himanshudesai.wordpress.com</licenseUrl>
+    <projectUrl>hhttps://github.com/hdesai/mytfsbuildmonitor</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Build Monitor</description>
+    <releaseNotes>This release contains the following changes...</releaseNotes>
+  </metadata>
+</package>

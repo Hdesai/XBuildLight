@@ -1,7 +1,9 @@
-﻿namespace BuildClient
+﻿using Microsoft.TeamFoundation.Build.Client;
+
+namespace BuildClient
 {
     public abstract class BuildEventPublisher : IBuildEventPublisher
     {
-        public abstract void Publish(BuildStoreEventArgs buildStoreEventArgs);
+        public abstract void Publish(string buildName,BuildExecutionStatus buildStatus);
     }
 }
