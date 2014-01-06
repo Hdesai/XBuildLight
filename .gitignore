@@ -15,6 +15,13 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
+BuildClient.Tests/bin
+BuildClient.Tests/obj
+BuildClient/bin
+BuildClient/obj
+BuildStateServer/bin
+DailyBuildProcess/obj
+DailyBuildProcess/bin
 
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/
