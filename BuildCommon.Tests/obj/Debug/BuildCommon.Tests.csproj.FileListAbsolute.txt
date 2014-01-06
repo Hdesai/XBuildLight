@@ -1,5 +1,0 @@
-C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon.Tests\bin\Debug\BuildCommon.Tests.dll
-C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon.Tests\bin\Debug\BuildCommon.Tests.pdb
-C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon.Tests\obj\Debug\BuildCommon.Tests.csprojResolveAssemblyReference.cache
-C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon.Tests\obj\Debug\BuildCommon.Tests.dll
-C:\Source\Tools\BuildMonitorSource\Trunk\BuildCommon.Tests\obj\Debug\BuildCommon.Tests.pdb
