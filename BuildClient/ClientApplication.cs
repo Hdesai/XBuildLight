@@ -51,7 +51,7 @@ namespace BuildClient
                 builder.RegisterType<Notifier>().As<INotifier>();
 
                 builder.RegisterType<BuildStoreEventSource>().As<IBuildStoreEventSource>().SingleInstance();
-                builder.Register(c => new TfsServiceProvider(c.Resolve<IBuildConfigurationManager>().TeamFoundationUrl))
+                builder.Register(c => new TfsServiceProvider(c.Resolve<IBuildConfigurationManager>().TeamFoundationUrl,c.Resolve<IBuildConfigurationManager>()))
                        .As<IServiceProvider>();
 
                 builder.RegisterType<BuildStatusChangeChannelManager>()

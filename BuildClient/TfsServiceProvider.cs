@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using BuildClient.Configuration;
 using BuildCommon;
 using Microsoft.TeamFoundation.Client;
 
@@ -7,10 +9,11 @@ namespace BuildClient
     public class TfsServiceProvider : IServiceProvider
     {
         private readonly Uri _projectCollectionUri;
-
-        public TfsServiceProvider(string projectCollectionUri)
+        private readonly IBuildConfigurationManager _buildConfigurationManager;
+        public TfsServiceProvider(string projectCollectionUri,IBuildConfigurationManager buildConfigurationManager)
         {
             _projectCollectionUri = new Uri(projectCollectionUri);
+            _buildConfigurationManager = buildConfigurationManager;
         }
 
         public object GetService(Type serviceType)
@@ -21,6 +24,14 @@ namespace BuildClient
 
             try
             {
+
+                if (_buildConfigurationManager.UseCredentialToAuthenticate)
+                {
+                    collection.Credentials = new NetworkCredential(_buildConfigurationManager.TfsAccountUserName,
+                        _buildConfigurationManager.TfsAccountPassword, _buildConfigurationManager.TfsAccountDomain);
+                }
+
+                
                 collection.EnsureAuthenticated();
                 service = collection.GetService(serviceType);
             }

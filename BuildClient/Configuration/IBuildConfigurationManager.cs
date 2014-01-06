@@ -6,5 +6,10 @@
         string BuildDefinitionNameExclusionPattern { get; }
         string TeamFoundationUrl { get; }
         BuildMapperGroupElementCollection BuildMappers { get; }
+        bool UseCredentialToAuthenticate { get; }
+        string TfsAccountDomain { get; }
+        string TfsAccountUserName { get; }
+        string TfsAccountPassword { get; }
+
     }
 }

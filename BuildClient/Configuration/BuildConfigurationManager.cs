@@ -24,5 +24,35 @@ namespace BuildClient.Configuration
         {
             get { return BuildMapperConfigSection.Current.BuildMappers; }
         }
+
+        public bool UseCredentialToAuthenticate
+        {
+            get
+            {
+                bool output;
+                if (bool.TryParse(ConfigurationManager.AppSettings["UseCredentialToAuthenticate"], out output))
+                {
+                    return output;
+                }
+
+                return false;
+            }
+
+        }
+
+        public string TfsAccountDomain
+        {
+            get { return ConfigurationManager.AppSettings["TFSAccountDomain"]; }
+        }
+
+        public string TfsAccountUserName
+        {
+            get { return ConfigurationManager.AppSettings["TFSAccountUserName"]; }
+        }
+
+        public string TfsAccountPassword
+        {
+            get { return ConfigurationManager.AppSettings["TFSAccountPassword"]; }
+        }
     }
 }
