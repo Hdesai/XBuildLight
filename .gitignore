@@ -185,3 +185,4 @@ BuildClient/obj
 BuildStateServer/bin
 DailyBuildProcess/obj
 DailyBuildProcess/bin
+/packages/OctoPack.2.0.26
