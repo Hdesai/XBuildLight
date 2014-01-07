@@ -14,9 +14,8 @@ namespace BuildClient
             _buildConfigurationManager = buildConfigurationManager;
         }
 
-        public string GetNotificationAddress(IBuildDefinition definition)
+        public string GetNotificationAddress(string buildName)
         {
-            string buildName = definition.Name;
             BuildMapperElement element = _buildConfigurationManager
                 .BuildMappers
                 .OfType<BuildMapperElement>()

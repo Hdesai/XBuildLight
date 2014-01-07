@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using BuildClient.Configuration;
 using BuildCommon;
+using Microsoft.TeamFoundation.Build.Client;
 
 namespace BuildClient
 {
@@ -60,7 +60,7 @@ namespace BuildClient
         private void ProcessBuildEvent(BuildStoreEventArgs buildEvent)
         {
           
-            Tracing.Client.TraceInformation("Build was requested for " + buildEvent.Data.RequestedFor);
+            Tracing.Client.TraceInformation("Build was requested for " + buildEvent.Data.BuildRequestedFor);
 
             switch (buildEvent.Type)
             {
@@ -79,8 +79,51 @@ namespace BuildClient
 
         private void HandleEvent(BuildStoreEventArgs buildStoreEventArgs)
         {
+            //if key exists and turned on then dont send the notification
+            if (ShouldDisablePublish())
+            {
+                DisplayPublishOnScreen(buildStoreEventArgs);
+            }
+            else
+            {
+                _buildEventPublisher.Publish(buildStoreEventArgs.Data.BuildName,buildStoreEventArgs.Data.Status);
+            }
+        }
 
-            _buildEventPublisher.Publish(buildStoreEventArgs);
+        private static void DisplayPublishOnScreen(BuildStoreEventArgs buildStoreEventArgs)
+        {
+            if (buildStoreEventArgs.Type == BuildStoreEventType.Build)
+            {
+                if (buildStoreEventArgs.Data.Status == BuildExecutionStatus.Failed)
+                {
+                    var currentForegroundColor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Build Failed!");
+                    Console.ForegroundColor = currentForegroundColor;
+                }
+
+                else
+                {
+                    Console.WriteLine(buildStoreEventArgs.Data.Status.ToString());
+                }
+            }
+
+            Tracing.Client.TraceInformation("Supressing Publish Event");
+        }
+
+        private bool ShouldDisablePublish()
+        {
+            var shouldDisablePublish =
+                Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["DisablePublishNotification"]);
+            
+            if (shouldDisablePublish != null && String.CompareOrdinal(shouldDisablePublish, "true") == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 
         }
 
@@ -107,4 +150,6 @@ namespace BuildClient
             }
         }
     }
+
+    
 }

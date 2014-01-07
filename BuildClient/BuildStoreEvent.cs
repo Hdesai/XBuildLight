@@ -10,10 +10,32 @@ namespace BuildClient
         QualityChanged
     }
 
+    public class BuildData
+    {
+
+        public string BuildName { get; set; }
+
+        public BuildStoreEventType EventType { get; set; }
+
+        public string BuildRequestedFor { get; set; }
+
+        public BuildExecutionStatus Status { get; set; }
+    }
+
+    public enum BuildExecutionStatus
+    {
+        Succeeded,
+        Failed,
+        Stopped,
+        InProgress,
+        PartiallySucceeded,
+        Unknown
+    }
+
     public class BuildStoreEventArgs : EventArgs
     {
         public BuildStoreEventType Type { get; set; }
-        public IBuildDetail Data { get; set; }
+        public BuildData Data { get; set; }
     }
 
     public delegate void BuildWatcherEventHandler(object sender, BuildStoreEventArgs buildWatcherEventArgs);

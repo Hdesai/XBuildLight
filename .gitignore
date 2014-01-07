@@ -26,6 +26,9 @@ DailyBuildProcess/bin
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/
 
+# Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
+!packages/*/build/
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
@@ -183,4 +186,17 @@ ehthumbs.db
 Desktop.ini
 
 # Recycle Bin used on file shares
+<<<<<<< HEAD
 $RECYCLE.BIN/
+=======
+$RECYCLE.BIN/
+
+BuildClient.Tests/bin
+BuildClient.Tests/obj
+BuildClient/bin
+BuildClient/obj
+BuildStateServer/bin
+DailyBuildProcess/obj
+DailyBuildProcess/bin
+/packages/OctoPack.2.0.26
+>>>>>>> currentpending
