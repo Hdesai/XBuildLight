@@ -76,18 +76,18 @@ namespace BuildCommon
                 taction();
 
             }
-            catch (Microsoft.TeamFoundation.Framework.Client.DatabaseConnectionException exception)
-            {
-                Tracing.Client.TraceError(String.Format("An Exception Occured while connecting TfsServer {0}", exception));
-            }
-            catch (Microsoft.TeamFoundation.Build.Client.BuildServerException exception)
-            {
-                Tracing.Client.TraceError(String.Format("An Exception Occured while connecting TfsServer {0}", exception));
-            }
-            catch (Microsoft.TeamFoundation.TeamFoundationServiceUnavailableException exception)
-            {
-                Tracing.Client.TraceError(String.Format("An Exception Occured while connecting TfsServer {0}", exception));
-            }
+            //catch (Microsoft.TeamFoundation.Framework.Client.DatabaseConnectionException exception)
+            //{
+            //    Tracing.Client.TraceError(String.Format("An Exception Occured while connecting TfsServer {0}", exception));
+            //}
+            //catch (Microsoft.TeamFoundation.Build.Client.BuildServerException exception)
+            //{
+            //    Tracing.Client.TraceError(String.Format("An Exception Occured while connecting TfsServer {0}", exception));
+            //}
+            //catch (Microsoft.TeamFoundation.TeamFoundationServiceUnavailableException exception)
+            //{
+            //    Tracing.Client.TraceError(String.Format("An Exception Occured while connecting TfsServer {0}", exception));
+            //}
 
             catch (WebException exception)
             {
