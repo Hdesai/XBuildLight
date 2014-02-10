@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using System.Threading;
 using BuildClient.Configuration;
 using BuildCommon;
-using Microsoft.TeamFoundation.Build.Client;
 
 namespace BuildClient
 {
@@ -15,9 +15,9 @@ namespace BuildClient
         private readonly IBuildEventPublisher _buildEventPublisher;
         private readonly IBuildStoreEventSource _eventSource;
         private bool _disposed;
-        
+
         public BuildManager(IBuildConfigurationManager buildConfigurationManager,
-                            IBuildStoreEventSource eventSource, IBuildEventPublisher buildEventPublisher)
+            IBuildStoreEventSource eventSource, IBuildEventPublisher buildEventPublisher)
         {
             _buildConfigurationManager = buildConfigurationManager;
             _eventSource = eventSource;
@@ -47,19 +47,26 @@ namespace BuildClient
         //Method that will be called periodically
         private void PollBuildServer(object state)
         {
-            BuildManagerExceptionHelper.WithExceptionHandling(() => _eventSource
-                                                                        .GetBuildStoreEvents().ToList()
-                                                                        .ForEach(ProcessBuildEvent),
-                                                              () =>
-                                                              Tracing.Client.TraceInformation(
-                                                                  "Getting list of build store events"),
-                                                              () => _lockExpiryTimer.Change(DueTime, GetPollingPeriod())
-                );
+            try
+            {
+                BuildManagerExceptionHelper.WithExceptionHandling(() => _eventSource
+                    .GetBuildStoreEvents().ToList()
+                    .ForEach(ProcessBuildEvent),
+                    () =>
+                        Tracing.Client.TraceInformation(
+                            "Getting list of build store events"),
+                    () => _lockExpiryTimer.Change(DueTime, GetPollingPeriod())
+                    );
+            }
+            catch (Exception exception)
+            {
+                Tracing.Client.TraceError(String.Format(
+                    "An Exception Occured while connecting TfsServer {0} ", exception));
+            }
         }
 
         private void ProcessBuildEvent(BuildStoreEventArgs buildEvent)
         {
-          
             Tracing.Client.TraceInformation("Build was requested for " + buildEvent.Data.BuildRequestedFor);
 
             switch (buildEvent.Type)
@@ -86,7 +93,7 @@ namespace BuildClient
             }
             else
             {
-                _buildEventPublisher.Publish(buildStoreEventArgs.Data.BuildName,buildStoreEventArgs.Data.Status);
+                _buildEventPublisher.Publish(buildStoreEventArgs.Data.BuildName, buildStoreEventArgs.Data.Status);
             }
         }
 
@@ -96,7 +103,7 @@ namespace BuildClient
             {
                 if (buildStoreEventArgs.Data.Status == BuildExecutionStatus.Failed)
                 {
-                    var currentForegroundColor = Console.ForegroundColor;
+                    ConsoleColor currentForegroundColor = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Build Failed!");
                     Console.ForegroundColor = currentForegroundColor;
@@ -113,18 +120,14 @@ namespace BuildClient
 
         private bool ShouldDisablePublish()
         {
-            var shouldDisablePublish =
-                Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["DisablePublishNotification"]);
-            
+            string shouldDisablePublish =
+                Convert.ToString(ConfigurationManager.AppSettings["DisablePublishNotification"]);
+
             if (shouldDisablePublish != null && String.CompareOrdinal(shouldDisablePublish, "true") == 0)
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
-
+            return false;
         }
 
         public void StopProcessing()
@@ -141,7 +144,6 @@ namespace BuildClient
                 {
                     if (_lockExpiryTimer != null)
                         _lockExpiryTimer.Dispose();
-
                 }
 
                 // Indicate that the instance has been disposed.
@@ -150,6 +152,4 @@ namespace BuildClient
             }
         }
     }
-
-    
 }
