@@ -103,15 +103,17 @@ namespace BuildClient
             {
                 if (buildStoreEventArgs.Data.Status == BuildExecutionStatus.Failed)
                 {
+                    Console.WriteLine(buildStoreEventArgs.Data.BuildName);
+                 
                     ConsoleColor currentForegroundColor = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Build Failed!");
+                    Console.WriteLine("Build {0} Failed!", buildStoreEventArgs.Data.BuildName);
                     Console.ForegroundColor = currentForegroundColor;
                 }
 
                 else
                 {
-                    Console.WriteLine(buildStoreEventArgs.Data.Status.ToString());
+                    Console.WriteLine("Build [{0}] ,Status {1}", buildStoreEventArgs.Data.BuildName,buildStoreEventArgs.Data.Status.ToString());
                 }
             }
 
