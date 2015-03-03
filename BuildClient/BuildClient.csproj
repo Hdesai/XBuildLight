@@ -117,7 +117,6 @@
     <Compile Include="BuildStoreEvent.cs" />
     <Compile Include="BuildStoreEventSource.cs" />
     <Compile Include="Configuration\BuildConfigurationManager.cs" />
-    <Compile Include="Configuration\ElementCollection.cs" />
     <Compile Include="Configuration\IBuildConfigurationManager.cs" />
     <Compile Include="IBuildEventPublisher.cs" />
     <Compile Include="IBuildStoreEventSource.cs" />

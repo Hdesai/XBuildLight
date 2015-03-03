@@ -26,5 +26,7 @@ namespace BuildCommon
         [OperationContract(IsOneWay = true)]
         void OnBuildSuceeded();
 
+        [OperationContract(IsOneWay = true)]
+        void OnBuildQualityChange(string quality);
     }
 }

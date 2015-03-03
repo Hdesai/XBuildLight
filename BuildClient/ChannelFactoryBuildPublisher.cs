@@ -1,6 +1,5 @@
 ﻿using System;
 using BuildCommon;
-using Microsoft.TeamFoundation.Build.Client;
 
 namespace BuildClient
 {
@@ -43,6 +42,24 @@ namespace BuildClient
                                                  .ExecuteOneWayCall(channel => Process(channel, buildStatus)),
                                              () => Tracing.Client.TraceInformation("About to Publish... "),
                                              () => Tracing.Client.TraceInformation("Sent to Publisher Target"));
+        }
+
+        public override void PublishQualityChange(string buildName, string buildQuality)
+        {
+            string serviceAddress = _notifier.GetNotificationAddress(buildName);
+
+            BuildManagerExceptionHelper.With(serviceAddress,
+                                             () =>
+                                             CreateChannel(buildName)
+                                                 .ExecuteOneWayCall(channel => Process(channel, buildQuality)),
+                                             () => Tracing.Client.TraceInformation("About to Publish... "),
+                                             () => Tracing.Client.TraceInformation("Sent to Publisher Target"));
+        }
+
+        private static void Process(IBuildStatusChange notificationChannel, string buildQuality)
+        {
+            notificationChannel.OnBuildQualityChange(buildQuality);
+            Tracing.Client.TraceInformation("Build Quality change to '{0}'",buildQuality);
         }
 
         private static void Process(IBuildStatusChange notificationChannel, BuildExecutionStatus buildStatus)
