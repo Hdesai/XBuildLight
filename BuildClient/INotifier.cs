@@ -1,9 +1,9 @@
-using Microsoft.TeamFoundation.Build.Client;
+using System.Collections.Generic;
 
 namespace BuildClient
 {
     public interface INotifier
     {
-        string GetNotificationAddress(string buildName);
+        IEnumerable<string> GetNotificationAddress(string buildName);
     }
 }
