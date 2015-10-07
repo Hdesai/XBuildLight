@@ -179,7 +179,8 @@ namespace BuildClient
                 BuildName = buildDetail.BuildDefinition.Name,
                 BuildRequestedFor = buildDetail.RequestedFor,
                 EventType = BuildStoreEventType.Build,
-                Status = GetStatus(buildDetail.Status)
+                Status = GetStatus(buildDetail.Status),
+                Quality = buildDetail.Quality
             };
         }
 

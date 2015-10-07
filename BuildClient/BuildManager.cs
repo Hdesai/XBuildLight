@@ -72,12 +72,10 @@ namespace BuildClient
             switch (buildEvent.Type)
             {
                 case BuildStoreEventType.Build:
+                case BuildStoreEventType.QualityChanged:
                     Tracing.Client.TraceInformation("Build Event");
                     HandleEvent(buildEvent);
-                    break;
-                case BuildStoreEventType.QualityChanged:
-                    Tracing.Client.TraceInformation("Quality Change Event");
-                    HandleEvent(buildEvent);
+                    HandleQualityEvent(buildEvent);
                     break;
                 default:
                     throw new Exception("Event was not recognised.");
@@ -97,24 +95,42 @@ namespace BuildClient
             }
         }
 
+        private void HandleQualityEvent(BuildStoreEventArgs buildStoreEventArgs)
+        {
+            //if key exists and turned on then dont send the notification
+            if (ShouldDisablePublish())
+            {
+                DisplayPublishOnScreen(buildStoreEventArgs);
+            }
+            else
+            {
+                _buildEventPublisher.PublishQualityChange(buildStoreEventArgs.Data.BuildName, buildStoreEventArgs.Data.Quality);
+            }
+        }
+
         private static void DisplayPublishOnScreen(BuildStoreEventArgs buildStoreEventArgs)
         {
+            BuildData buildData = buildStoreEventArgs.Data;
             if (buildStoreEventArgs.Type == BuildStoreEventType.Build)
             {
-                if (buildStoreEventArgs.Data.Status == BuildExecutionStatus.Failed)
+                if (buildData.Status == BuildExecutionStatus.Failed)
                 {
-                    Console.WriteLine(buildStoreEventArgs.Data.BuildName);
+                    Console.WriteLine(buildData.BuildName);
                  
                     ConsoleColor currentForegroundColor = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Build {0} Failed!", buildStoreEventArgs.Data.BuildName);
+                    Console.WriteLine("Build {0} Failed!", buildData.BuildName);
                     Console.ForegroundColor = currentForegroundColor;
                 }
 
                 else
                 {
-                    Console.WriteLine("Build [{0}] ,Status {1}", buildStoreEventArgs.Data.BuildName,buildStoreEventArgs.Data.Status.ToString());
+                    Console.WriteLine("Build [{0}] ,Status {1}", buildData.BuildName,buildData.Status.ToString());
                 }
+            }
+            else if (buildStoreEventArgs.Type == BuildStoreEventType.QualityChanged)
+            {
+                Console.WriteLine("Build [{0}] ,Status {1}, Quality{2}", buildData.BuildName, buildData.Status,buildData.Quality);
             }
 
             Tracing.Client.TraceInformation("Supressing Publish Event");

@@ -1,6 +1,5 @@
 ﻿using System;
 using BuildCommon;
-using Microsoft.TeamFoundation.Build.Client;
 
 namespace BuildClient
 {
@@ -21,10 +20,8 @@ namespace BuildClient
             return _cachedChannelManager.CreateChannel(notificationAddress);
         }
 
-        private IBuildStatusChange CreateChannel(string buildName)
+        private IBuildStatusChange CreateChannel(string notificationAddress)
         {
-            string notificationAddress = _notifier.GetNotificationAddress(buildName);
-
             if (String.IsNullOrEmpty(notificationAddress))
             {
                 throw new ArgumentException("Notification Address is not provided in configuration");
@@ -35,14 +32,34 @@ namespace BuildClient
 
         public override void Publish(string buildName,BuildExecutionStatus buildStatus)
         {
-            string serviceAddress = _notifier.GetNotificationAddress(buildName);
+            foreach (string serviceAddress in _notifier.GetNotificationAddress(buildName))
+            {
+                BuildManagerExceptionHelper.With(serviceAddress,
+                    () =>
+                        CreateChannel(serviceAddress)
+                            .ExecuteOneWayCall(channel => Process(channel, buildStatus)),
+                    () => Tracing.Client.TraceInformation("About to Publish... "),
+                    () => Tracing.Client.TraceInformation("Sent to Publisher Target"));
+            }
+        }
 
-            BuildManagerExceptionHelper.With(serviceAddress,
-                                             () =>
-                                             CreateChannel(buildName)
-                                                 .ExecuteOneWayCall(channel => Process(channel, buildStatus)),
-                                             () => Tracing.Client.TraceInformation("About to Publish... "),
-                                             () => Tracing.Client.TraceInformation("Sent to Publisher Target"));
+        public override void PublishQualityChange(string buildName, string buildQuality)
+        {
+            foreach (string serviceAddress in _notifier.GetNotificationAddress(buildName))
+            {
+                BuildManagerExceptionHelper.With(serviceAddress,
+                    () =>
+                        CreateChannel(serviceAddress)
+                            .ExecuteOneWayCall(channel => Process(channel, buildQuality)),
+                    () => Tracing.Client.TraceInformation("About to Publish... "),
+                    () => Tracing.Client.TraceInformation("Sent to Publisher Target"));
+            }
+        }
+
+        private static void Process(IBuildStatusChange notificationChannel, string buildQuality)
+        {
+            notificationChannel.OnBuildQualityChange(buildQuality);
+            Tracing.Client.TraceInformation("Build Quality change to '{0}'",buildQuality);
         }
 
         private static void Process(IBuildStatusChange notificationChannel, BuildExecutionStatus buildStatus)

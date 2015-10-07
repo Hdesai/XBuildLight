@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using BuildCommon;
 
 namespace BuildClient.Configuration
 {

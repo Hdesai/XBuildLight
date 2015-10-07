@@ -1,4 +1,6 @@
-﻿namespace BuildClient.Configuration
+﻿using BuildCommon;
+
+namespace BuildClient.Configuration
 {
     public sealed class BuildMapperGroupElementCollection : ElementCollection<BuildMapperElement>
     {
@@ -11,10 +13,5 @@
         {
             get { return "buildMapper"; }
         }
-    }
-
-    public interface ICollectionElement
-    {
-        string Name { get; }
     }
 }

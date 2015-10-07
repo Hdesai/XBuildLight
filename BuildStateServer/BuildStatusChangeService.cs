@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using BuildCommon;
+using BuildStateServer.Configuration;
 
 namespace BuildStateServer
 {
@@ -10,7 +12,9 @@ namespace BuildStateServer
     public class BuildStatusChangeService : IBuildStatusChange, IDisposable
     {
         private byte _lastBuildStatus;
-
+        private readonly LightRuleCollection _lightRules = LightConfigurationSection.Current.Rules;
+        private const string QualityPrefix = "quality:";
+        private const string StatusPrefix = "status:";
         
 
         public BuildStatusChangeService()
@@ -28,16 +32,12 @@ namespace BuildStateServer
 
         public void OnBuildFailed()
         {
-            SetLED(Delcom.REDLED, true, false);
-            SetLED(Delcom.GREENLED, false, false);
-            SetLED(Delcom.BLUELED, false, false);
+            ApplyRuleByName(StatusPrefix + "Failed");
         }
 
         public void OnBuildStarted()
         {
-            SetLED(Delcom.BLUELED, true, false);
-            SetLED(Delcom.REDLED, false, false);
-            SetLED(Delcom.GREENLED, false, false);
+            ApplyRuleByName(StatusPrefix + "Started");
         }
 
         public void OnBuildStopped()
@@ -47,30 +47,48 @@ namespace BuildStateServer
 
         public void OnBuildPartiallySucceeded()
         {
-            SetLED(Delcom.GREENLED, true, true);
-            SetLED(Delcom.BLUELED, false, false);
-            SetLED(Delcom.REDLED, false, false);
+            ApplyRuleByName(StatusPrefix + "PartiallySucceeded");
         }
 
         public void OnBuildInProgress()
         {
-            SetLED(Delcom.GREENLED, false, false);
-            SetLED(Delcom.BLUELED, true, false);
-            SetLED(Delcom.REDLED, false, false);
+            ApplyRuleByName(StatusPrefix + "InProgress");
         }
 
         public void OnBuildNotStarted()
         {
-            SetLED(Delcom.GREENLED, false, false);
-            SetLED(Delcom.BLUELED, true, false);
-            SetLED(Delcom.REDLED, false, false);
+            ApplyRuleByName(StatusPrefix + "NotStarted");
         }
 
         public void OnBuildSuceeded()
         {
-            SetLED(Delcom.GREENLED, true, false);
-            SetLED(Delcom.BLUELED, false, false);
-            SetLED(Delcom.REDLED, false, false);
+            ApplyRuleByName(StatusPrefix + "Succeeded");
+        }
+
+        public void OnBuildQualityChange(string quality)
+        {
+            var buildRuleName = QualityPrefix + quality;
+            ApplyRuleByName(buildRuleName);
+        }
+
+        private void ApplyRuleByName(string buildRuleName)
+        {
+            Tracing.Server.TraceInformation("Find rule for {0}", buildRuleName);
+            var rule =
+                _lightRules.FirstOrDefault(
+                    p => p.Name.Equals(buildRuleName, StringComparison.InvariantCultureIgnoreCase));
+            if (rule != null)
+            {
+                ApplyRule(rule);
+            }
+        }
+
+        private void ApplyRule(LightRuleElement rule)
+        {
+            Tracing.Server.TraceInformation("Found rule {0}", rule.Name);
+            SetLED(Delcom.GREENLED, rule.Green, rule.FlashGreen);
+            SetLED(Delcom.BLUELED, rule.Blue, rule.FlashBlue);
+            SetLED(Delcom.REDLED, rule.Red, rule.FlashRed);
         }
 
         public void Dispose()

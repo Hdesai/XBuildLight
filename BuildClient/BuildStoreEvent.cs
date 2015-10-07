@@ -20,6 +20,7 @@ namespace BuildClient
         public string BuildRequestedFor { get; set; }
 
         public BuildExecutionStatus Status { get; set; }
+        public string Quality { get; set; }
     }
 
     public enum BuildExecutionStatus

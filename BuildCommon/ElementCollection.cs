@@ -1,9 +1,11 @@
-﻿using System.Configuration;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 
-namespace BuildClient.Configuration
+namespace BuildCommon
 {
-    public class ElementCollection<TElement> : ConfigurationElementCollection
-        where TElement : ConfigurationElement, ICollectionElement, new()
+    public class ElementCollection<TElement> : ConfigurationElementCollection, IEnumerable<TElement> where TElement : ConfigurationElement, ICollectionElement, new()
     {
         public override ConfigurationElementCollectionType CollectionType
         {
@@ -31,6 +33,13 @@ namespace BuildClient.Configuration
         protected override object GetElementKey(ConfigurationElement element)
         {
             return ((TElement) element).Name;
+        }
+
+        IEnumerator<TElement> IEnumerable<TElement>.GetEnumerator()
+        {
+            return (from i in Enumerable.Range(0, this.Count)
+                    select this[i])
+                .GetEnumerator();
         }
     }
 }

@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
 using BuildClient.Configuration;
-using Microsoft.TeamFoundation.Build.Client;
 
 namespace BuildClient
 {
@@ -14,16 +14,12 @@ namespace BuildClient
             _buildConfigurationManager = buildConfigurationManager;
         }
 
-        public string GetNotificationAddress(string buildName)
+        public IEnumerable<string> GetNotificationAddress(string buildName)
         {
-            BuildMapperElement element = _buildConfigurationManager
+            return _buildConfigurationManager
                 .BuildMappers
-                .OfType<BuildMapperElement>()
-                .FirstOrDefault(x => x.TfsBuildToMonitor == buildName);
-
-            if (element != null) return element.NotificationAddress;
-
-            return null;
+                .Where(x => x.TfsBuildToMonitor == buildName)
+                .Select(x => x.NotificationAddress);
         }
     }
 }
