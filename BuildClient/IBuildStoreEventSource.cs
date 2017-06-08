@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BuildClient
 {
     public interface IBuildStoreEventSource
     {
-        IEnumerable<BuildStoreEventArgs> GetBuildStoreEvents();
+        Task<IEnumerable<BuildStoreEventArgs>> GetBuildStoreEvents();
     }
 }

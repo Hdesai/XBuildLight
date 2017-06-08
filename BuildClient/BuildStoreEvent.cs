@@ -14,9 +14,7 @@ namespace BuildClient
     {
 
         public string BuildName { get; set; }
-
-        public BuildStoreEventType EventType { get; set; }
-
+        
         public string BuildRequestedFor { get; set; }
 
         public BuildExecutionStatus Status { get; set; }

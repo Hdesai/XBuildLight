@@ -10,6 +10,8 @@
         string TfsAccountDomain { get; }
         string TfsAccountUserName { get; }
         string TfsAccountPassword { get; }
+        string PAFToken { get; }
+
 
     }
 }

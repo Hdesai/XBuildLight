@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 
 namespace BuildClient.Configuration
 {
@@ -54,5 +55,7 @@ namespace BuildClient.Configuration
         {
             get { return ConfigurationManager.AppSettings["TFSAccountPassword"]; }
         }
+
+        public string PAFToken => ConfigurationManager.AppSettings["PAFToken"];
     }
 }

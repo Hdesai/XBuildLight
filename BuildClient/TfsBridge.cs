@@ -6,22 +6,21 @@ using System.Text.RegularExpressions;
 using BuildClient.Configuration;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Server;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.TeamFoundation.Build.WebApi;
 
 namespace BuildClient
 {
-    public interface IBuildEventSystem
+    public class TfsBridge : IBuildEventSystem
     {
-        IEnumerable<BuildStoreEventArgs> GetBuildStoreEvents();
-    }
 
-    public class TfsBridge:IBuildEventSystem
-    {
-     
         private readonly IDictionary<string, IBuildDetail> _cacheLookup = new Dictionary<string, IBuildDetail>();
         private readonly IBuildConfigurationManager _buildConfigurationManager;
         private readonly Regex _buildDefinitionNameExclusionRegex;
         private readonly IBuildServer _buildServer;
-        
+
         private readonly IServiceProvider _teamFoundationServiceProvider;
         public TfsBridge(IServiceProvider teamFoundationServiceProvider,
                                      IBuildConfigurationManager buildConfigurationManager)
@@ -47,19 +46,22 @@ namespace BuildClient
 
 
         //Will be polled periodically
-        public IEnumerable<BuildStoreEventArgs> GetBuildStoreEvents()
+        public async Task<IEnumerable<BuildStoreEventArgs>> GetBuildStoreEvents()
         {
             IEnumerable<string> teamProjectNames = GetTeamProjectNames();
-            IEnumerable<IBuildDetail> builds = GetBuildsForTeamProjects(teamProjectNames);
+            var  builds = GetBuildsForTeamProjects(teamProjectNames);
+            var allEvents = new List<BuildStoreEventArgs>();
 
             foreach (IBuildDetail build in builds)
             {
                 BuildStoreEventArgs buildStoreEvent = GetBuildStoreEventIfAny(build);
                 if (buildStoreEvent != null)
                 {
-                    yield return buildStoreEvent;
+                    allEvents.Add(buildStoreEvent);
                 }
             }
+
+            return await Task.FromResult<IEnumerable<BuildStoreEventArgs>>(allEvents.ToArray());
         }
 
         private IEnumerable<string> GetTeamProjectNames()
@@ -83,7 +85,7 @@ namespace BuildClient
                 }
 
                 var structureService = _teamFoundationServiceProvider.GetService<ICommonStructureService>();
-                ProjectInfo[] projectInfos = structureService.ListProjects();
+                var projectInfos = structureService.ListProjects();
                 BuildMapperElement element = mapperElement;
                 IEnumerable<string> projectInfoNames =
                     projectInfos.Select(p => p.Name)
@@ -94,10 +96,15 @@ namespace BuildClient
             return projectNames.Distinct();
         }
 
+
         private IEnumerable<IBuildDetail> GetBuildsForTeamProjects(IEnumerable<string> teamProjectNames)
         {
+
+            var builds_ = _buildServer.QueryBuildDefinitions("zenith", QueryOptions.Definitions);
+
             foreach (string teamProjectName in teamProjectNames)
             {
+
                 IBuildDefinition[] definitions = _buildServer.QueryBuildDefinitions(teamProjectName);
                 foreach (IBuildDefinition definition in definitions)
                 {
@@ -107,7 +114,7 @@ namespace BuildClient
                         var buildSpec = _buildServer.CreateBuildDetailSpec(teamProjectName, definition.Name);
                         buildSpec.InformationTypes = null;
                         buildSpec.MaxBuildsPerDefinition = 1;
-                        buildSpec.QueryOrder = BuildQueryOrder.FinishTimeDescending;
+                        buildSpec.QueryOrder = Microsoft.TeamFoundation.Build.Client.BuildQueryOrder.FinishTimeDescending;
                         IBuildQueryResult result = _buildServer.QueryBuilds(buildSpec);
                         yield return result.Builds.FirstOrDefault();
                     }
@@ -121,13 +128,13 @@ namespace BuildClient
             {
                 bool isExcludedByRegex = _buildDefinitionNameExclusionRegex.IsMatch(definition.Name);
 
-                return (definition.QueueStatus == DefinitionQueueStatus.Enabled)
+                return (definition.QueueStatus == Microsoft.TeamFoundation.Build.Client.DefinitionQueueStatus.Enabled)
                        && !isExcludedByRegex;
             }
             IEnumerable<BuildMapperElement> buildMapperElements =
                 _buildConfigurationManager.BuildMappers.OfType<BuildMapperElement>();
 
-            return (definition.QueueStatus == DefinitionQueueStatus.Enabled) &&
+            return (definition.QueueStatus == Microsoft.TeamFoundation.Build.Client.DefinitionQueueStatus.Enabled) &&
                    buildMapperElements.Any(x => x.TfsBuildToMonitor == definition.Name);
         }
 
@@ -170,7 +177,7 @@ namespace BuildClient
             };
         }
 
-        
+
 
         public BuildData Generate(IBuildDetail buildDetail)
         {
@@ -178,36 +185,35 @@ namespace BuildClient
             {
                 BuildName = buildDetail.BuildDefinition.Name,
                 BuildRequestedFor = buildDetail.RequestedFor,
-                EventType = BuildStoreEventType.Build,
                 Status = GetStatus(buildDetail.Status),
                 Quality = buildDetail.Quality
             };
         }
 
-        public BuildExecutionStatus GetStatus(BuildStatus status)
+        public BuildExecutionStatus GetStatus(Microsoft.TeamFoundation.Build.Client.BuildStatus status)
         {
-           
+
             switch (status)
             {
-                case BuildStatus.All:
-                    
-                case BuildStatus.Failed:
+                case Microsoft.TeamFoundation.Build.Client.BuildStatus.All:
+
+                case Microsoft.TeamFoundation.Build.Client.BuildStatus.Failed:
                     return BuildExecutionStatus.Failed;
-                    
-                case BuildStatus.InProgress:
+
+                case Microsoft.TeamFoundation.Build.Client.BuildStatus.InProgress:
                     return BuildExecutionStatus.InProgress;
 
-                case BuildStatus.None:
-                    
-                case BuildStatus.NotStarted:
-                    
-                case BuildStatus.PartiallySucceeded:
+                case Microsoft.TeamFoundation.Build.Client.BuildStatus.None:
+
+                case Microsoft.TeamFoundation.Build.Client.BuildStatus.NotStarted:
+
+                case Microsoft.TeamFoundation.Build.Client.BuildStatus.PartiallySucceeded:
                     return BuildExecutionStatus.PartiallySucceeded;
 
-                case BuildStatus.Stopped:
+                case Microsoft.TeamFoundation.Build.Client.BuildStatus.Stopped:
                     return BuildExecutionStatus.Stopped;
 
-                case BuildStatus.Succeeded:
+                case Microsoft.TeamFoundation.Build.Client.BuildStatus.Succeeded:
                     return BuildExecutionStatus.Succeeded;
             }
 

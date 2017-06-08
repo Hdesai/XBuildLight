@@ -49,8 +49,8 @@ namespace BuildClient
         {
             try
             {
-                BuildManagerExceptionHelper.WithExceptionHandling(() => _eventSource
-                    .GetBuildStoreEvents().ToList()
+                BuildManagerExceptionHelper.WithExceptionHandling(async () =>(await  _eventSource
+                    .GetBuildStoreEvents()).ToList()
                     .ForEach(ProcessBuildEvent),
                     () =>
                         Tracing.Client.TraceInformation(

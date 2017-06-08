@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BuildClient
 {
@@ -10,9 +11,9 @@ namespace BuildClient
             _buildEventSystem = buildEventSystem;
         }
         
-        public IEnumerable<BuildStoreEventArgs> GetBuildStoreEvents()
+        public async Task<IEnumerable<BuildStoreEventArgs>> GetBuildStoreEvents()
         {
-            return _buildEventSystem.GetBuildStoreEvents();
+            return await _buildEventSystem.GetBuildStoreEvents();
         }
     }
 }
