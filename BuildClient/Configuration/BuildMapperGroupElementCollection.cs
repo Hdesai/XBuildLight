@@ -2,7 +2,7 @@
 
 namespace BuildClient.Configuration
 {
-    public sealed class BuildMapperGroupElementCollection : ElementCollection<BuildMapperElement>
+    public sealed class BuildMapperGroupElementCollection : ElementCollection<BuildMapperElementV2>
     {
         /// <summary>
         ///     Gets the name used to identify this collection of elements in the configuration file when overridden in a derived class.
