@@ -30,9 +30,9 @@ namespace BuildClient
             return GetBuildStatusChangeChannel(notificationAddress);
         }
 
-        public override void Publish(string buildName,BuildExecutionStatus buildStatus)
+        public override void Publish(int buildId,string buildName,BuildExecutionStatus buildStatus)
         {
-            foreach (string serviceAddress in _notifier.GetNotificationAddress(buildName))
+            foreach (string serviceAddress in _notifier.GetNotificationAddress(buildId))
             {
                 BuildManagerExceptionHelper.With(serviceAddress,
                     () =>
@@ -43,9 +43,9 @@ namespace BuildClient
             }
         }
 
-        public override void PublishQualityChange(string buildName, string buildQuality)
+        public override void PublishQualityChange(int buildId, string buildName,string buildQuality)
         {
-            foreach (string serviceAddress in _notifier.GetNotificationAddress(buildName))
+            foreach (string serviceAddress in _notifier.GetNotificationAddress(buildId))
             {
                 BuildManagerExceptionHelper.With(serviceAddress,
                     () =>

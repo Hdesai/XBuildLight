@@ -14,11 +14,11 @@ namespace BuildClient
             _buildConfigurationManager = buildConfigurationManager;
         }
 
-        public IEnumerable<string> GetNotificationAddress(string buildName)
+        public IEnumerable<string> GetNotificationAddress(int buildId)
         {
             return _buildConfigurationManager
                 .BuildMappers
-                .Where(x => x.TfsBuildToMonitor == buildName)
+                .Where(x => x.BuildId == buildId)
                 .Select(x => x.NotificationAddress);
         }
     }

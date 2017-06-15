@@ -12,6 +12,7 @@ namespace BuildClient
 
     public class BuildData
     {
+        public int BuildId { get; set; }
 
         public string BuildName { get; set; }
         
@@ -35,6 +36,7 @@ namespace BuildClient
     {
         public BuildStoreEventType Type { get; set; }
         public BuildData Data { get; set; }
+        
     }
 
     public delegate void BuildWatcherEventHandler(object sender, BuildStoreEventArgs buildWatcherEventArgs);

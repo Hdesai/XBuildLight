@@ -91,7 +91,7 @@ namespace BuildClient
             }
             else
             {
-                _buildEventPublisher.Publish(buildStoreEventArgs.Data.BuildName, buildStoreEventArgs.Data.Status);
+                _buildEventPublisher.Publish(buildStoreEventArgs.Data.BuildId,buildStoreEventArgs.Data.BuildName, buildStoreEventArgs.Data.Status);
             }
         }
 
@@ -104,7 +104,7 @@ namespace BuildClient
             }
             else
             {
-                _buildEventPublisher.PublishQualityChange(buildStoreEventArgs.Data.BuildName, buildStoreEventArgs.Data.Quality);
+                _buildEventPublisher.PublishQualityChange(buildStoreEventArgs.Data.BuildId,buildStoreEventArgs.Data.BuildName, buildStoreEventArgs.Data.Quality);
             }
         }
 

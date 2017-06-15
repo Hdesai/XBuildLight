@@ -55,6 +55,7 @@ namespace BuildClient
                         var buildStoreArg = new BuildStoreEventArgs();
                         //data
                         buildStoreArg.Data = new BuildData();
+                        buildStoreArg.Data.BuildId = build.Value.Definition.Id;
                         buildStoreArg.Data.BuildName = build.Value.Definition.Name;
                         buildStoreArg.Data.BuildRequestedFor = build.Value.RequestedFor.DisplayName;
                         buildStoreArg.Data.Quality = build.Value.Quality;

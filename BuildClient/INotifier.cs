@@ -4,6 +4,6 @@ namespace BuildClient
 {
     public interface INotifier
     {
-        IEnumerable<string> GetNotificationAddress(string buildName);
+        IEnumerable<string> GetNotificationAddress(int buildId);
     }
 }
